@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="House Plan">
+<title>Ben's 5-Week House Plan</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  :root {
+    --bg: #f5f4f0;
+    --surface: #ffffff;
+    --border: #e0ddd6;
+    --text: #1a1a18;
+    --muted: #888780;
+    --accent: #2563eb;
+    --accent-bg: #eff6ff;
+    --accent-text: #1d4ed8;
+    --green-bg: #f0fdf4;
+    --green-text: #15803d;
+    --amber-bg: #fffbeb;
+    --amber-text: #92400e;
+    --radius: 14px;
+    --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #111110;
+      --surface: #1c1c1a;
+      --border: #2e2e2b;
+      --text: #f0ede8;
+      --muted: #666562;
+      --accent: #3b82f6;
+      --accent-bg: #1e3a5f;
+      --accent-text: #93c5fd;
+      --green-bg: #052e16;
+      --green-text: #86efac;
+      --amber-bg: #292000;
+      --amber-text: #fcd34d;
+    }
+  }
+
+  html, body { height: 100%; background: var(--bg); font-family: var(--font); color: var(--text); }
+
+  .app { max-width: 480px; margin: 0 auto; padding: 0 0 80px; }
+
+  /* Header */
+  .header { padding: 1.25rem 1rem 0.75rem; position: sticky; top: 0; background: var(--bg); z-index: 10; border-bottom: 1px solid var(--border); }
+  .header-top { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 0.75rem; }
+  .header h1 { font-size: 20px; font-weight: 600; letter-spacing: -0.3px; }
+  .header-sub { font-size: 13px; color: var(--muted); }
+  .progress-wrap { display: flex; align-items: center; gap: 10px; }
+  .progress-bar { flex: 1; height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.3s; }
+  .progress-pct { font-size: 13px; font-weight: 500; color: var(--accent); min-width: 36px; text-align: right; }
+
+  /* Room sections */
+  .room { margin: 0.75rem 0.75rem 0; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+
+  .room-header { display: flex; align-items: center; gap: 10px; padding: 0.9rem 1rem; cursor: pointer; user-select: none; -webkit-user-select: none; }
+  .room-icon { font-size: 20px; width: 28px; text-align: center; flex-shrink: 0; }
+  .room-title { font-size: 15px; font-weight: 600; flex: 1; }
+  .room-badge { font-size: 12px; color: var(--muted); background: var(--bg); padding: 2px 8px; border-radius: 20px; border: 1px solid var(--border); }
+  .room-chevron { font-size: 16px; color: var(--muted); transition: transform 0.2s; flex-shrink: 0; }
+  .room.open .room-chevron { transform: rotate(180deg); }
+
+  .task-list { display: none; border-top: 1px solid var(--border); }
+  .room.open .task-list { display: block; }
+
+  .task { display: flex; align-items: flex-start; gap: 12px; padding: 0.75rem 1rem; cursor: pointer; border-bottom: 1px solid var(--border); active-opacity: 0.7; }
+  .task:last-child { border-bottom: none; }
+  .task:active { background: var(--bg); }
+
+  .check { width: 22px; height: 22px; border: 2px solid var(--border); border-radius: 6px; flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+  .task.done .check { background: var(--accent); border-color: var(--accent); }
+  .check-mark { display: none; color: white; font-size: 13px; font-weight: 700; }
+  .task.done .check-mark { display: block; }
+
+  .task-body { flex: 1; min-width: 0; }
+  .task-text { font-size: 14px; line-height: 1.5; }
+  .task.done .task-text { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--border); }
+
+  .tag { display: inline-block; font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 4px; margin-top: 3px; text-transform: uppercase; letter-spacing: 0.4px; }
+  .tag-week1 { background: var(--accent-bg); color: var(--accent-text); }
+  .tag-sell { background: var(--green-bg); color: var(--green-text); }
+  .tag-later { background: var(--amber-bg); color: var(--amber-text); }
+
+  /* Add task */
+  .add-task { display: flex; gap: 8px; padding: 0.6rem 0.75rem; border-top: 1px solid var(--border); background: var(--bg); }
+  .add-input { flex: 1; font-size: 14px; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); outline: none; font-family: var(--font); }
+  .add-input:focus { border-color: var(--accent); }
+  .add-btn { font-size: 22px; color: var(--accent); background: none; border: none; cursor: pointer; padding: 0 4px; line-height: 1; }
+
+  /* Legend */
+  .legend { display: flex; gap: 12px; flex-wrap: wrap; padding: 0.75rem 1rem; margin: 0.75rem 0.75rem 0; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--muted); }
+
+  /* Reset button */
+  .footer { text-align: center; padding: 1.5rem 1rem 0.5rem; }
+  .reset-btn { font-size: 12px; color: var(--muted); background: none; border: 1px solid var(--border); padding: 6px 14px; border-radius: 20px; cursor: pointer; font-family: var(--font); }
+  .reset-btn:active { background: var(--border); }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="header">
+    <div class="header-top">
+      <h1>🏠 5-week house plan</h1>
+      <span class="header-sub" id="count-label">0 of 0 done</span>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <span class="progress-pct" id="progress-pct">0%</span>
+    </div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><span class="tag tag-week1">week 1</span> Do first</div>
+    <div class="legend-item"><span class="tag tag-sell">sell</span> List for sale</div>
+    <div class="legend-item"><span class="tag tag-later">later</span> End of 5 weeks</div>
+  </div>
+
+  <div id="rooms-container"></div>
+
+  <div class="footer">
+    <button class="reset-btn" onclick="resetAll()">Reset all checkmarks</button>
+  </div>
+
+</div>
+
+<script>
+const ROOMS = [
+  {
+    id: 'garage', icon: '🚗', label: 'Garage', open: true,
+    tasks: [
+      { text: 'Collapse and remove all cardboard', tag: 'week1' },
+      { text: 'Find ongoing cardboard solution (recycling schedule)', tag: 'week1' },
+      { text: 'Remove old refrigerator', tag: 'week1' },
+      { text: 'Get 7 rugs cleaned', tag: '' },
+      { text: 'Sort toys — donate, trash, or keep', tag: 'week1' },
+      { text: 'Reorganize seasonal storage bins (Christmas, Halloween, pool)', tag: '' },
+      { text: "Remove/donate old books, DVDs, VHS tapes (dad's)", tag: 'sell' },
+      { text: 'Remove broken lawn mower, keep working one', tag: '' },
+      { text: 'Organize weed whacker and lawn equipment', tag: '' },
+      { text: 'Move drywall, lumber, and flooring to one zone or dispose', tag: 'week1' },
+      { text: 'Set up workout area (weights, rowing machine, pull-up bar)', tag: '' },
+      { text: 'Organize garage freezer — toss old meat', tag: '' },
+      { text: 'Install new outdoor garage light with camera', tag: '' },
+    ]
+  },
+  {
+    id: 'basement', icon: '📦', label: 'Basement', open: false,
+    tasks: [
+      { text: 'Vacuum family room', tag: '' },
+      { text: 'Clear out old electronics from media center rack', tag: 'sell' },
+      { text: 'Set up filing cabinet — organize all documents by category', tag: '' },
+      { text: 'Clean basement bathroom thoroughly', tag: '' },
+      { text: 'Fix or replace toilet (belly in pipe issue)', tag: '' },
+      { text: "Clear out guest room / dad's old stuff", tag: '' },
+      { text: 'Set up guest room as dual-purpose space (Murphy bed + workout TV)', tag: 'later' },
+      { text: 'Tidy laundry room and networking rack', tag: '' },
+      { text: 'New back door installation (contractor coming)', tag: '' },
+      { text: 'Find a use for small basement closet', tag: '' },
+    ]
+  },
+  {
+    id: 'mainfloor', icon: '🍳', label: 'Main floor', open: false,
+    tasks: [
+      { text: "Sort son's toys in living room — donate or trash outgrown items", tag: '' },
+      { text: 'Organize arts and crafts cart', tag: '' },
+      { text: 'Deep clean kitchen', tag: '' },
+      { text: 'Scrub stove and stovetop', tag: '' },
+      { text: 'Clean out kitchen fridge and freezer', tag: '' },
+      { text: 'Reorganize cabinets — most-used items up top', tag: '' },
+      { text: 'Clean pantry and toss expired food', tag: '' },
+      { text: 'Clean kitchen medicine cabinet — toss expired items', tag: '' },
+      { text: 'Tame the island — find a system to keep it clear', tag: '' },
+      { text: 'Remove unused island chairs for more walkability', tag: 'sell' },
+      { text: 'Fix kitchen floor squeak near fridge', tag: '' },
+      { text: 'Organize dining room credenza', tag: '' },
+      { text: 'Fix or modify back door lock / door frame', tag: '' },
+    ]
+  },
+  {
+    id: 'topfloor', icon: '🛏️', label: 'Top floor', open: false,
+    tasks: [
+      { text: 'Deep clean master bathroom', tag: '' },
+      { text: 'Pressure wash shower (run hose through window)', tag: '' },
+      { text: 'Fix slow-draining sink in master bath', tag: '' },
+      { text: 'Reinstall towel rack in master bathroom', tag: '' },
+      { text: 'Fix master bathroom door hinge (lifts to close)', tag: '' },
+      { text: 'Reorganize under-sink and medicine cabinet in master bath', tag: '' },
+      { text: 'Run coaxial cable from attic to basement for Plex/antenna', tag: '' },
+      { text: 'Install shelving and racks in empty master closet (after attic access)', tag: 'later' },
+      { text: 'Install new king bed frame in master bedroom', tag: '' },
+      { text: 'Source and install headboard', tag: 'later' },
+      { text: 'Clean guest room, organize guest closet', tag: '' },
+      { text: "Repaint son's room (green → rainbow accent)", tag: 'later' },
+    ]
+  },
+  {
+    id: 'sell', icon: '💰', label: 'Things to sell / donate', open: false,
+    tasks: [
+      { text: 'Baby swing — clean first, then sell', tag: 'sell' },
+      { text: 'Old stroller', tag: 'sell' },
+      { text: 'Bouncing chair', tag: 'sell' },
+      { text: 'Both infant car seats', tag: 'sell' },
+      { text: 'Select rugs (3–4) once cleaned', tag: 'sell' },
+      { text: 'Old computer parts and electronics', tag: 'sell' },
+      { text: "Dad's stuff — review with him before listing", tag: 'sell' },
+    ]
+  },
+  {
+    id: 'later', icon: '🗓️', label: 'End of 5 weeks / later', open: false,
+    tasks: [
+      { text: 'Baby-proof the house — gates, cabinet locks, etc.', tag: 'later' },
+      { text: 'Paint basement bathroom ceiling / walls', tag: 'later' },
+      { text: "Plan son's bathroom remodel (talk to dad)", tag: 'later' },
+    ]
+  }
+];
+
+let state = {};
+
+function load() {
+  try {
+    const raw = localStorage.getItem('ben_house_v1');
+    if (raw) state = JSON.parse(raw);
+  } catch(e) { state = {}; }
+}
+
+function save() {
+  try { localStorage.setItem('ben_house_v1', JSON.stringify(state)); } catch(e) {}
+}
+
+function key(roomId, i) { return roomId + '_' + i; }
+
+function updateProgress() {
+  let total = 0, done = 0;
+  ROOMS.forEach(r => r.tasks.forEach((t, i) => {
+    total++;
+    if (state[key(r.id, i)]) done++;
+  }));
+  const pct = total ? Math.round(done / total * 100) : 0;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('count-label').textContent = done + ' of ' + total + ' done';
+}
+
+function render() {
+  const container = document.getElementById('rooms-container');
+  container.innerHTML = '';
+
+  ROOMS.forEach(room => {
+    const doneCnt = room.tasks.filter((t, i) => state[key(room.id, i)]).length;
+
+    const div = document.createElement('div');
+    div.className = 'room' + (room.open ? ' open' : '');
+
+    // Header
+    const hdr = document.createElement('div');
+    hdr.className = 'room-header';
+    hdr.innerHTML = `<span class="room-icon">${room.icon}</span>
+      <span class="room-title">${room.label}</span>
+      <span class="room-badge">${doneCnt}/${room.tasks.length}</span>
+      <span class="room-chevron">▾</span>`;
+    hdr.addEventListener('click', () => {
+      room.open = !room.open;
+      render();
+    });
+
+    // Task list
+    const list = document.createElement('div');
+    list.className = 'task-list';
+
+    room.tasks.forEach((task, i) => {
+      const k = key(room.id, i);
+      const isDone = !!state[k];
+      const item = document.createElement('div');
+      item.className = 'task' + (isDone ? ' done' : '');
+      const tagHtml = task.tag
+        ? `<div><span class="tag tag-${task.tag}">${task.tag === 'week1' ? 'week 1' : task.tag}</span></div>`
+        : '';
+      item.innerHTML = `<div class="check"><span class="check-mark">✓</span></div>
+        <div class="task-body"><div class="task-text">${task.text}</div>${tagHtml}</div>`;
+      item.addEventListener('click', () => {
+        state[k] = !state[k];
+        save();
+        render();
+        updateProgress();
+      });
+      list.appendChild(item);
+    });
+
+    // Add task row
+    const addRow = document.createElement('div');
+    addRow.className = 'add-task';
+    const inp = document.createElement('input');
+    inp.className = 'add-input';
+    inp.placeholder = 'Add a task…';
+    inp.type = 'text';
+    const btn = document.createElement('button');
+    btn.className = 'add-btn';
+    btn.textContent = '+';
+    btn.addEventListener('click', () => {
+      const val = inp.value.trim();
+      if (!val) return;
+      room.tasks.push({ text: val, tag: '' });
+      inp.value = '';
+      render();
+      updateProgress();
+    });
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') btn.click(); });
+    addRow.appendChild(inp);
+    addRow.appendChild(btn);
+    list.appendChild(addRow);
+
+    div.appendChild(hdr);
+    div.appendChild(list);
+    container.appendChild(div);
+  });
+
+  updateProgress();
+}
+
+function resetAll() {
+  if (confirm('Reset all checkmarks? This cannot be undone.')) {
+    state = {};
+    save();
+    render();
+    updateProgress();
+  }
+}
+
+load();
+render();
+</script>
+</body>
+</html>
