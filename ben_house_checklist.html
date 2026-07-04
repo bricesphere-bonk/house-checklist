@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="House Plan">
 <title>Ben's 5-Week House Plan</title>
 <style>
@@ -13,28 +12,17 @@
     --bg: #f5f4f0; --surface: #ffffff; --border: #e0ddd6; --text: #1a1a18;
     --muted: #888780; --accent: #2563eb; --accent-bg: #eff6ff; --accent-text: #1d4ed8;
     --green-bg: #f0fdf4; --green-text: #15803d; --amber-bg: #fffbeb; --amber-text: #92400e;
-    --red-bg: #fef2f2; --red-text: #991b1b; --radius: 14px;
-    --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --radius: 14px; --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   }
   @media (prefers-color-scheme: dark) {
     :root {
       --bg: #111110; --surface: #1c1c1a; --border: #2e2e2b; --text: #f0ede8;
       --muted: #666562; --accent: #3b82f6; --accent-bg: #1e3a5f; --accent-text: #93c5fd;
       --green-bg: #052e16; --green-text: #86efac; --amber-bg: #292000; --amber-text: #fcd34d;
-      --red-bg: #2d0a0a; --red-text: #fca5a5;
     }
   }
   html, body { background: var(--bg); font-family: var(--font); color: var(--text); }
   .app { max-width: 480px; margin: 0 auto; padding: 0 0 80px; }
-
-  /* COUNTDOWN */
-  .countdown { margin: 0.75rem 0.75rem 0; background: var(--accent); border-radius: var(--radius); padding: 1rem; text-align: center; color: white; }
-  .countdown-title { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.8; margin-bottom: 6px; }
-  .countdown-numbers { display: flex; justify-content: center; gap: 16px; }
-  .countdown-unit { display: flex; flex-direction: column; align-items: center; }
-  .countdown-num { font-size: 28px; font-weight: 700; line-height: 1; }
-  .countdown-label { font-size: 10px; opacity: 0.75; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.4px; }
-  .countdown-msg { font-size: 12px; opacity: 0.85; margin-top: 8px; }
 
   /* HEADER */
   .header { padding: 1rem 1rem 0.75rem; position: sticky; top: 0; background: var(--bg); z-index: 10; border-bottom: 1px solid var(--border); }
@@ -45,6 +33,42 @@
   .progress-bar { flex: 1; height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
   .progress-fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.3s; }
   .progress-pct { font-size: 13px; font-weight: 500; color: var(--accent); min-width: 36px; text-align: right; }
+
+  /* DAILY TRACKER */
+  .tracker-card { margin: 0.75rem 0.75rem 0; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .tracker-card-header { display: flex; align-items: center; justify-content: space-between; padding: 0.85rem 1rem 0.5rem; }
+  .tracker-card-title { font-size: 15px; font-weight: 600; }
+  .tracker-avg-badge { font-size: 13px; color: var(--accent); font-weight: 600; }
+
+  .log-form { padding: 0 1rem 0.75rem; }
+  .log-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .log-label { font-size: 13px; color: var(--muted); width: 40px; flex-shrink: 0; }
+  .day-select { flex: 1; font-size: 14px; padding: 6px 8px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); font-family: var(--font); }
+  .stars-input { display: flex; gap: 4px; }
+  .star-btn { font-size: 26px; background: none; border: none; cursor: pointer; opacity: 0.25; transition: opacity 0.1s; padding: 0; line-height: 1; }
+  .star-btn.active { opacity: 1; }
+  .note-input { flex: 1; font-size: 13px; padding: 6px 8px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); font-family: var(--font); }
+  .note-input::placeholder { color: var(--muted); }
+  .log-btn { width: 100%; padding: 9px; background: var(--accent); color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: var(--font); }
+
+  /* Daily log dropdown toggle */
+  .log-toggle { display: flex; align-items: center; justify-content: space-between; padding: 0.65rem 1rem; border-top: 1px solid var(--border); cursor: pointer; user-select: none; background: var(--bg); }
+  .log-toggle-label { font-size: 13px; font-weight: 500; color: var(--muted); }
+  .log-toggle-chevron { font-size: 13px; color: var(--muted); transition: transform 0.2s; }
+  .log-toggle.open .log-toggle-chevron { transform: rotate(180deg); }
+
+  .day-entries { display: none; border-top: 1px solid var(--border); max-height: 300px; overflow-y: auto; }
+  .day-entries.open { display: block; }
+  .day-entry { display: flex; align-items: flex-start; gap: 8px; padding: 0.6rem 1rem; border-bottom: 1px solid var(--border); }
+  .day-entry:last-child { border-bottom: none; }
+  .day-num { font-size: 12px; font-weight: 600; color: var(--muted); width: 40px; flex-shrink: 0; padding-top: 2px; }
+  .day-stars { font-size: 14px; flex-shrink: 0; }
+  .day-note { font-size: 13px; color: var(--text); flex: 1; line-height: 1.4; }
+  .day-delete { font-size: 14px; color: var(--muted); background: none; border: none; cursor: pointer; padding: 0; opacity: 0.4; flex-shrink: 0; }
+
+  .avg-bar { padding: 0.65rem 1rem; background: var(--accent-bg); display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); }
+  .avg-label { font-size: 13px; color: var(--accent-text); font-weight: 500; }
+  .avg-val { font-size: 16px; font-weight: 700; color: var(--accent); }
 
   /* LEGEND */
   .legend { display: flex; gap: 10px; flex-wrap: wrap; padding: 0.65rem 1rem; margin: 0.75rem 0.75rem 0; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
@@ -79,60 +103,21 @@
   .add-input:focus { border-color: var(--accent); }
   .add-btn { font-size: 22px; color: var(--accent); background: none; border: none; cursor: pointer; padding: 0 4px; line-height: 1; }
 
-  /* DAILY TRACKER */
-  .tracker { margin: 0.75rem 0.75rem 0; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
-  .tracker-header { display: flex; align-items: center; gap: 10px; padding: 0.9rem 1rem; cursor: pointer; user-select: none; }
-  .tracker-title { font-size: 15px; font-weight: 600; flex: 1; }
-  .tracker-avg { font-size: 13px; color: var(--accent); font-weight: 600; }
-  .tracker-body { display: none; border-top: 1px solid var(--border); }
-  .tracker.open .tracker-body { display: block; }
-  .tracker.open .room-chevron { transform: rotate(180deg); }
+  /* COUNTDOWN */
+  .countdown { margin: 0.75rem 0.75rem 0; background: var(--accent); border-radius: var(--radius); padding: 1rem; text-align: center; color: white; }
+  .countdown-title { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.8; margin-bottom: 8px; }
+  .countdown-numbers { display: flex; justify-content: center; gap: 16px; }
+  .countdown-unit { display: flex; flex-direction: column; align-items: center; }
+  .countdown-num { font-size: 28px; font-weight: 700; line-height: 1; }
+  .countdown-label { font-size: 10px; opacity: 0.75; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.4px; }
+  .countdown-msg { font-size: 12px; opacity: 0.85; margin-top: 10px; }
 
-  /* Log a day */
-  .log-form { padding: 1rem; border-bottom: 1px solid var(--border); background: var(--bg); }
-  .log-form-title { font-size: 13px; font-weight: 600; margin-bottom: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.4px; }
-  .log-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-  .log-label { font-size: 13px; color: var(--muted); width: 40px; flex-shrink: 0; }
-  .day-select { flex: 1; font-size: 14px; padding: 6px 8px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); font-family: var(--font); }
-  .stars-input { display: flex; gap: 6px; }
-  .star-btn { font-size: 24px; background: none; border: none; cursor: pointer; opacity: 0.3; transition: opacity 0.1s; padding: 0; line-height: 1; }
-  .star-btn.active { opacity: 1; }
-  .note-input { flex: 1; font-size: 13px; padding: 6px 8px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); font-family: var(--font); }
-  .note-input::placeholder { color: var(--muted); }
-  .log-btn { width: 100%; padding: 10px; background: var(--accent); color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: var(--font); margin-top: 4px; }
-  .log-btn:active { opacity: 0.85; }
-
-  /* Day entries */
-  .day-entry { display: flex; align-items: flex-start; gap: 10px; padding: 0.65rem 1rem; border-bottom: 1px solid var(--border); }
-  .day-entry:last-child { border-bottom: none; }
-  .day-num { font-size: 13px; font-weight: 600; color: var(--muted); width: 44px; flex-shrink: 0; padding-top: 1px; }
-  .day-stars { font-size: 16px; flex-shrink: 0; }
-  .day-note { font-size: 13px; color: var(--text); flex: 1; line-height: 1.4; }
-  .day-delete { font-size: 16px; color: var(--muted); background: none; border: none; cursor: pointer; padding: 0; opacity: 0.5; }
-
-  .avg-bar { padding: 0.75rem 1rem; background: var(--accent-bg); display: flex; align-items: center; justify-content: space-between; }
-  .avg-label { font-size: 13px; color: var(--accent-text); font-weight: 600; }
-  .avg-val { font-size: 18px; font-weight: 700; color: var(--accent); }
-
-  /* Footer */
-  .footer { text-align: center; padding: 1.5rem 1rem 0.5rem; }
+  .footer { text-align: center; padding: 1.25rem 1rem 0.5rem; }
   .reset-btn { font-size: 12px; color: var(--muted); background: none; border: 1px solid var(--border); padding: 6px 14px; border-radius: 20px; cursor: pointer; font-family: var(--font); }
 </style>
 </head>
 <body>
 <div class="app">
-
-  <!-- COUNTDOWN -->
-  <div class="countdown">
-    <div class="countdown-title">⏳ Family comes home</div>
-    <div class="countdown-numbers">
-      <div class="countdown-unit"><span class="countdown-num" id="cd-days">--</span><span class="countdown-label">days</span></div>
-      <div class="countdown-unit"><span class="countdown-num" id="cd-hrs">--</span><span class="countdown-label">hrs</span></div>
-      <div class="countdown-unit"><span class="countdown-num" id="cd-min">--</span><span class="countdown-label">min</span></div>
-      <div class="countdown-unit"><span class="countdown-num" id="cd-sec">--</span><span class="countdown-label">sec</span></div>
-    </div>
-    <div class="countdown-msg" id="cd-msg">July 31st can't come soon enough 🏠</div>
-  </div>
 
   <!-- HEADER -->
   <div class="header">
@@ -146,6 +131,46 @@
     </div>
   </div>
 
+  <!-- DAILY TRACKER -->
+  <div class="tracker-card">
+    <div class="tracker-card-header">
+      <span class="tracker-card-title">📅 Daily ratings</span>
+      <span class="tracker-avg-badge" id="tracker-avg-badge"></span>
+    </div>
+    <div class="log-form">
+      <div class="log-row">
+        <span class="log-label">Day</span>
+        <select class="day-select" id="day-select"></select>
+      </div>
+      <div class="log-row">
+        <span class="log-label">Stars</span>
+        <div class="stars-input">
+          <button class="star-btn" onclick="setStar(1)">⭐</button>
+          <button class="star-btn" onclick="setStar(2)">⭐</button>
+          <button class="star-btn" onclick="setStar(3)">⭐</button>
+          <button class="star-btn" onclick="setStar(4)">⭐</button>
+        </div>
+      </div>
+      <div class="log-row">
+        <span class="log-label">Note</span>
+        <input class="note-input" id="note-input" type="text" placeholder="What happened today?">
+      </div>
+      <button class="log-btn" onclick="logDay()">Save day</button>
+    </div>
+
+    <!-- Daily log dropdown -->
+    <div class="log-toggle" id="log-toggle" onclick="toggleLog()">
+      <span class="log-toggle-label" id="log-toggle-label">Daily log (6 days)</span>
+      <span class="log-toggle-chevron">▾</span>
+    </div>
+    <div class="day-entries" id="day-entries"></div>
+
+    <div class="avg-bar">
+      <span class="avg-label">5-week average</span>
+      <span class="avg-val" id="avg-val">—</span>
+    </div>
+  </div>
+
   <!-- LEGEND -->
   <div class="legend">
     <div class="legend-item"><span class="tag tag-week1">week 1</span> Do first</div>
@@ -153,44 +178,19 @@
     <div class="legend-item"><span class="tag tag-later">later</span> End of 5 weeks</div>
   </div>
 
+  <!-- ROOMS -->
   <div id="rooms-container"></div>
 
-  <!-- DAILY TRACKER -->
-  <div class="tracker" id="tracker">
-    <div class="tracker-header" onclick="toggleTracker()">
-      <span style="font-size:20px;width:28px;text-align:center">📅</span>
-      <span class="tracker-title">Daily ratings</span>
-      <span class="tracker-avg" id="tracker-avg-badge"></span>
-      <span class="room-chevron">▾</span>
+  <!-- COUNTDOWN -->
+  <div class="countdown">
+    <div class="countdown-title">⏳ Family comes home — July 31st</div>
+    <div class="countdown-numbers">
+      <div class="countdown-unit"><span class="countdown-num" id="cd-days">--</span><span class="countdown-label">days</span></div>
+      <div class="countdown-unit"><span class="countdown-num" id="cd-hrs">--</span><span class="countdown-label">hrs</span></div>
+      <div class="countdown-unit"><span class="countdown-num" id="cd-min">--</span><span class="countdown-label">min</span></div>
+      <div class="countdown-unit"><span class="countdown-num" id="cd-sec">--</span><span class="countdown-label">sec</span></div>
     </div>
-    <div class="tracker-body">
-      <div class="log-form">
-        <div class="log-form-title">Log a day</div>
-        <div class="log-row">
-          <span class="log-label">Day</span>
-          <select class="day-select" id="day-select"></select>
-        </div>
-        <div class="log-row">
-          <span class="log-label">Stars</span>
-          <div class="stars-input" id="stars-input">
-            <button class="star-btn" data-star="1" onclick="setStar(1)">⭐</button>
-            <button class="star-btn" data-star="2" onclick="setStar(2)">⭐</button>
-            <button class="star-btn" data-star="3" onclick="setStar(3)">⭐</button>
-            <button class="star-btn" data-star="4" onclick="setStar(4)">⭐</button>
-          </div>
-        </div>
-        <div class="log-row">
-          <span class="log-label">Note</span>
-          <input class="note-input" id="note-input" type="text" placeholder="What happened today?">
-        </div>
-        <button class="log-btn" onclick="logDay()">Save day</button>
-      </div>
-      <div id="day-entries"></div>
-      <div class="avg-bar">
-        <span class="avg-label">5-week average</span>
-        <span class="avg-val" id="avg-val">—</span>
-      </div>
-    </div>
+    <div class="countdown-msg" id="cd-msg"></div>
   </div>
 
   <div class="footer">
@@ -198,321 +198,213 @@
   </div>
 
 </div>
-
 <script>
 const ROOMS = [
-  {
-    id: 'garage', icon: '🚗', label: 'Garage', open: true,
-    tasks: [
-      { text: 'Collapse and remove all cardboard', tag: 'week1' },
-      { text: 'Find ongoing cardboard solution (recycling schedule)', tag: 'week1' },
-      { text: 'Remove old refrigerator', tag: 'week1' },
-      { text: 'Get 7 rugs cleaned', tag: '' },
-      { text: 'Sort toys — donate, trash, or keep', tag: 'week1' },
-      { text: 'Reorganize seasonal storage bins (Christmas, Halloween, pool)', tag: '' },
-      { text: "Remove/donate old books, DVDs, VHS tapes (dad's)", tag: 'sell' },
-      { text: 'Remove broken lawn mower, keep working one', tag: '' },
-      { text: 'Organize weed whacker and lawn equipment', tag: '' },
-      { text: 'Move drywall, lumber, and flooring to one zone or dispose', tag: 'week1' },
-      { text: 'Set up workout area (weights, rowing machine, pull-up bar)', tag: '' },
-      { text: 'Organize garage freezer — toss old meat', tag: '' },
-      { text: 'Set mouse traps and poison, find and seal entry points', tag: 'week1' },
-    ]
-  },
-  {
-    id: 'basement', icon: '📦', label: 'Basement', open: false,
-    tasks: [
-      { text: 'Vacuum family room', tag: '' },
-      { text: 'Clear out old electronics from media center rack', tag: 'sell' },
-      { text: 'Set up filing cabinet — organize all documents by category', tag: '' },
-      { text: 'Clean basement bathroom thoroughly', tag: '' },
-      { text: 'Fix or replace toilet (belly in pipe issue)', tag: '' },
-      { text: "Clear out guest room / dad's old stuff", tag: '' },
-      { text: 'Set up guest room as dual-purpose space (Murphy bed + workout TV)', tag: 'later' },
-      { text: 'Tidy laundry room and networking rack', tag: '' },
-      { text: 'New back door installation (contractor coming)', tag: '' },
-      { text: 'Find a use for small basement closet', tag: '' },
-    ]
-  },
-  {
-    id: 'mainfloor', icon: '🍳', label: 'Main floor', open: false,
-    tasks: [
-      { text: "Sort son's toys in living room — donate or trash outgrown items", tag: '' },
-      { text: 'Organize arts and crafts cart', tag: '' },
-      { text: 'Deep clean kitchen', tag: '' },
-      { text: 'Scrub stove and stovetop', tag: '' },
-      { text: 'Clean out kitchen fridge and freezer', tag: '' },
-      { text: 'Reorganize cabinets — most-used items up top', tag: '' },
-      { text: 'Clean pantry and toss expired food', tag: '' },
-      { text: 'Clean kitchen medicine cabinet — toss expired items', tag: '' },
-      { text: 'Tame the island — find a system to keep it clear', tag: '' },
-      { text: 'Remove unused island chairs for more walkability', tag: 'sell' },
-      { text: 'Fix kitchen floor squeak near fridge', tag: '' },
-      { text: 'Organize dining room credenza', tag: '' },
-      { text: 'Fix or modify back door lock / door frame', tag: '' },
-      { text: 'Check and clear HVAC air registers throughout house', tag: '' },
-    ]
-  },
-  {
-    id: 'topfloor', icon: '🛏️', label: 'Top floor', open: false,
-    tasks: [
-      { text: 'Deep clean master bathroom', tag: '' },
-      { text: 'Pressure wash shower (run hose through window)', tag: '' },
-      { text: 'Fix slow-draining sink in master bath', tag: '' },
-      { text: 'Reinstall towel rack in master bathroom', tag: '' },
-      { text: 'Fix master bathroom door hinge (lifts to close)', tag: '' },
-      { text: 'Reorganize under-sink and medicine cabinet in master bath', tag: '' },
-      { text: 'Install shelving and racks in empty master closet (after attic access)', tag: 'later' },
-      { text: 'Install new king bed frame in master bedroom', tag: '' },
-      { text: 'Source and install headboard', tag: 'later' },
-      { text: 'Clean guest room, organize guest closet', tag: '' },
-      { text: "Repaint son's room (green → rainbow accent)", tag: 'later' },
-    ]
-  },
-  {
-    id: 'tech', icon: '🔒', label: 'Security, Networking & Plex', open: false,
-    tasks: [
-      { text: 'Install new outdoor garage light with camera', tag: '' },
-      { text: 'Run coaxial cable from attic to basement for Plex/UHF antenna', tag: '' },
-      { text: 'Research Netgear Nighthawk AC1750 as replacement for Xfinity XB8', tag: '' },
-      { text: 'Evaluate and improve whole-home WiFi coverage', tag: '' },
-      { text: 'Replace pool camera and install dome mount in concrete', tag: '' },
-    ]
-  },
-  {
-    id: 'outdoor', icon: '🌿', label: 'Outdoor & general', open: false,
-    tasks: [
-      { text: 'Power wash and clean outdoor garbage cans', tag: '' },
-    ]
-  },
-  {
-    id: 'sell', icon: '💰', label: 'Things to sell / donate', open: false,
-    tasks: [
-      { text: 'Baby swing — clean first, then sell', tag: 'sell' },
-      { text: 'Old stroller', tag: 'sell' },
-      { text: 'Bouncing chair', tag: 'sell' },
-      { text: 'Both infant car seats', tag: 'sell' },
-      { text: 'Select rugs (3–4) once cleaned', tag: 'sell' },
-      { text: 'Old computer parts and electronics', tag: 'sell' },
-      { text: "Dad's stuff — review with him before listing", tag: 'sell' },
-    ]
-  },
-  {
-    id: 'later', icon: '🗓️', label: 'End of 5 weeks / later', open: false,
-    tasks: [
-      { text: 'Baby-proof the house — gates, cabinet locks, etc.', tag: 'later' },
-      { text: 'Paint basement bathroom ceiling / walls', tag: 'later' },
-      { text: "Plan son's bathroom remodel (talk to dad)", tag: 'later' },
-    ]
-  }
+  { id:'garage', icon:'🚗', label:'Garage', open:true, tasks:[
+    {text:'Collapse and remove all cardboard',tag:'week1'},
+    {text:'Find ongoing cardboard solution (recycling schedule)',tag:'week1'},
+    {text:'Remove old refrigerator',tag:'week1'},
+    {text:'Get 7 rugs cleaned',tag:''},
+    {text:'Sort toys — donate, trash, or keep',tag:'week1'},
+    {text:'Reorganize seasonal storage bins (Christmas, Halloween, pool)',tag:''},
+    {text:"Remove/donate old books, DVDs, VHS tapes (dad's)",tag:'sell'},
+    {text:'Remove broken lawn mower, keep working one',tag:''},
+    {text:'Organize weed whacker and lawn equipment',tag:''},
+    {text:'Move drywall, lumber, and flooring to one zone or dispose',tag:'week1'},
+    {text:'Set up workout area (weights, rowing machine, pull-up bar)',tag:''},
+    {text:'Organize garage freezer — toss old meat',tag:''},
+    {text:'Set mouse traps and poison, find and seal entry points',tag:'week1'},
+  ]},
+  { id:'basement', icon:'📦', label:'Basement', open:false, tasks:[
+    {text:'Vacuum family room',tag:''},
+    {text:'Clear out old electronics from media center rack',tag:'sell'},
+    {text:'Set up filing cabinet — organize all documents by category',tag:''},
+    {text:'Clean basement bathroom thoroughly',tag:''},
+    {text:'Fix or replace toilet (belly in pipe issue)',tag:''},
+    {text:"Clear out guest room / dad's old stuff",tag:''},
+    {text:'Set up guest room as dual-purpose space (Murphy bed + workout TV)',tag:'later'},
+    {text:'Tidy laundry room and networking rack',tag:''},
+    {text:'New back door installation (contractor coming)',tag:''},
+    {text:'Find a use for small basement closet',tag:''},
+  ]},
+  { id:'mainfloor', icon:'🍳', label:'Main floor', open:false, tasks:[
+    {text:"Sort son's toys in living room — donate or trash outgrown items",tag:''},
+    {text:'Organize arts and crafts cart',tag:''},
+    {text:'Deep clean kitchen',tag:''},
+    {text:'Scrub stove and stovetop',tag:''},
+    {text:'Clean out kitchen fridge and freezer',tag:''},
+    {text:'Reorganize cabinets — most-used items up top',tag:''},
+    {text:'Clean pantry and toss expired food',tag:''},
+    {text:'Clean kitchen medicine cabinet — toss expired items',tag:''},
+    {text:'Tame the island — find a system to keep it clear',tag:''},
+    {text:'Remove unused island chairs for more walkability',tag:'sell'},
+    {text:'Fix kitchen floor squeak near fridge',tag:''},
+    {text:'Organize dining room credenza',tag:''},
+    {text:'Fix or modify back door lock / door frame',tag:''},
+    {text:'Check and clear HVAC air registers throughout house',tag:''},
+  ]},
+  { id:'topfloor', icon:'🛏️', label:'Top floor', open:false, tasks:[
+    {text:'Deep clean master bathroom',tag:''},
+    {text:'Pressure wash shower (run hose through window)',tag:''},
+    {text:'Fix slow-draining sink in master bath',tag:''},
+    {text:'Reinstall towel rack in master bathroom',tag:''},
+    {text:'Fix master bathroom door hinge (lifts to close)',tag:''},
+    {text:'Reorganize under-sink and medicine cabinet in master bath',tag:''},
+    {text:'Install shelving and racks in empty master closet (after attic access)',tag:'later'},
+    {text:'Install new king bed frame in master bedroom',tag:''},
+    {text:'Source and install headboard',tag:'later'},
+    {text:'Clean guest room, organize guest closet',tag:''},
+    {text:"Repaint son's room (green → rainbow accent)",tag:'later'},
+  ]},
+  { id:'tech', icon:'🔒', label:'Security, Networking & Plex', open:false, tasks:[
+    {text:'Install new outdoor garage light with camera',tag:''},
+    {text:'Run coaxial cable from attic to basement for Plex/UHF antenna',tag:''},
+    {text:'Research Netgear Nighthawk AC1750 as replacement for Xfinity XB8',tag:''},
+    {text:'Evaluate and improve whole-home WiFi coverage',tag:''},
+    {text:'Replace pool camera and install dome mount in concrete',tag:''},
+  ]},
+  { id:'outdoor', icon:'🌿', label:'Outdoor & general', open:false, tasks:[
+    {text:'Power wash and clean outdoor garbage cans',tag:''},
+  ]},
+  { id:'sell', icon:'💰', label:'Things to sell / donate', open:false, tasks:[
+    {text:'Baby swing — clean first, then sell',tag:'sell'},
+    {text:'Old stroller',tag:'sell'},
+    {text:'Bouncing chair',tag:'sell'},
+    {text:'Both infant car seats',tag:'sell'},
+    {text:'Select rugs (3–4) once cleaned',tag:'sell'},
+    {text:'Old computer parts and electronics',tag:'sell'},
+    {text:"Dad's stuff — review with him before listing",tag:'sell'},
+  ]},
+  { id:'later', icon:'🗓️', label:'End of 5 weeks / later', open:false, tasks:[
+    {text:'Baby-proof the house — gates, cabinet locks, etc.',tag:'later'},
+    {text:'Paint basement bathroom ceiling / walls',tag:'later'},
+    {text:"Plan son's bathroom remodel (talk to dad)",tag:'later'},
+  ]},
 ];
 
-// STATE
-let taskState = {};
-let dayRatings = [
-  { day: 1, stars: 2, note: 'Slow start, light progress' },
-  { day: 2, stars: 3, note: 'Strong day, early to bed' },
-  { day: 3, stars: 1, note: 'Rushed morning, worked late, nothing done at home' },
-  { day: 4, stars: 1, note: 'Low output, losing steam' },
-  { day: 5, stars: 2, note: 'First early morning, 3 mile walk, productive at work' },
-  { day: 6, stars: 2, note: 'Ate well, worked 1.5hrs, good attitude' },
-];
-let selectedStar = 0;
+let taskState={}, dayRatings=[
+  {day:1,stars:2,note:'Slow start, light progress'},
+  {day:2,stars:3,note:'Strong day, early to bed'},
+  {day:3,stars:1,note:'Rushed morning, worked late, nothing done at home'},
+  {day:4,stars:1,note:'Low output, losing steam'},
+  {day:5,stars:2,note:'First early morning, 3 mile walk, productive at work'},
+  {day:6,stars:2,note:'Ate well, worked 1.5hrs, good attitude'},
+], selectedStar=0, logOpen=false;
 
-function load() {
-  try {
-    const t = localStorage.getItem('ben_tasks_v2');
-    if (t) taskState = JSON.parse(t);
-    const r = localStorage.getItem('ben_ratings_v2');
-    if (r) dayRatings = JSON.parse(r);
-  } catch(e) {}
+function load(){
+  try{
+    const t=localStorage.getItem('ben_tasks_v3');if(t)taskState=JSON.parse(t);
+    const r=localStorage.getItem('ben_ratings_v3');if(r)dayRatings=JSON.parse(r);
+  }catch(e){}
+}
+function save(){
+  try{
+    localStorage.setItem('ben_tasks_v3',JSON.stringify(taskState));
+    localStorage.setItem('ben_ratings_v3',JSON.stringify(dayRatings));
+  }catch(e){}
+}
+function key(rid,i){return rid+'_'+i;}
+
+function updateCountdown(){
+  const target=new Date('2025-07-31T00:00:00'),now=new Date(),diff=target-now;
+  if(diff<=0){['cd-days','cd-hrs','cd-min','cd-sec'].forEach(id=>document.getElementById(id).textContent='0');document.getElementById('cd-msg').textContent="They're home! 🎉";return;}
+  document.getElementById('cd-days').textContent=Math.floor(diff/86400000);
+  document.getElementById('cd-hrs').textContent=String(Math.floor((diff%86400000)/3600000)).padStart(2,'0');
+  document.getElementById('cd-min').textContent=String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
+  document.getElementById('cd-sec').textContent=String(Math.floor((diff%60000)/1000)).padStart(2,'0');
+  const days=Math.floor(diff/86400000);
+  document.getElementById('cd-msg').textContent=days===0?"Today's the day! 🎉":days===1?"They're back tomorrow! 💪":days<=7?"Final stretch — make it count! 🔥":"Make them proud when they walk in 🏠";
+}
+setInterval(updateCountdown,1000);updateCountdown();
+
+function updateProgress(){
+  let total=0,done=0;
+  ROOMS.forEach(r=>r.tasks.forEach((_,i)=>{total++;if(taskState[key(r.id,i)])done++;}));
+  const pct=total?Math.round(done/total*100):0;
+  document.getElementById('progress-fill').style.width=pct+'%';
+  document.getElementById('progress-pct').textContent=pct+'%';
+  document.getElementById('count-label').textContent=done+' of '+total+' done';
 }
 
-function save() {
-  try {
-    localStorage.setItem('ben_tasks_v2', JSON.stringify(taskState));
-    localStorage.setItem('ben_ratings_v2', JSON.stringify(dayRatings));
-  } catch(e) {}
-}
-
-function key(roomId, i) { return roomId + '_' + i; }
-
-// COUNTDOWN
-function updateCountdown() {
-  const target = new Date('2025-07-31T00:00:00');
-  const now = new Date();
-  const diff = target - now;
-  if (diff <= 0) {
-    document.getElementById('cd-days').textContent = '0';
-    document.getElementById('cd-hrs').textContent = '0';
-    document.getElementById('cd-min').textContent = '0';
-    document.getElementById('cd-sec').textContent = '0';
-    document.getElementById('cd-msg').textContent = "They're home! 🎉";
-    return;
-  }
-  const days = Math.floor(diff / 86400000);
-  const hrs = Math.floor((diff % 86400000) / 3600000);
-  const min = Math.floor((diff % 3600000) / 60000);
-  const sec = Math.floor((diff % 60000) / 1000);
-  document.getElementById('cd-days').textContent = days;
-  document.getElementById('cd-hrs').textContent = String(hrs).padStart(2,'0');
-  document.getElementById('cd-min').textContent = String(min).padStart(2,'0');
-  document.getElementById('cd-sec').textContent = String(sec).padStart(2,'0');
-  if (days === 0) document.getElementById('cd-msg').textContent = "Today's the day! 🎉";
-  else if (days === 1) document.getElementById('cd-msg').textContent = "They're back tomorrow! Get it done! 💪";
-  else if (days <= 7) document.getElementById('cd-msg').textContent = "Final stretch — make it count! 🔥";
-  else document.getElementById('cd-msg').textContent = "July 31st — make them proud 🏠";
-}
-setInterval(updateCountdown, 1000);
-updateCountdown();
-
-// PROGRESS
-function updateProgress() {
-  let total = 0, done = 0;
-  ROOMS.forEach(r => r.tasks.forEach((t,i) => { total++; if (taskState[key(r.id,i)]) done++; }));
-  const pct = total ? Math.round(done/total*100) : 0;
-  document.getElementById('progress-fill').style.width = pct + '%';
-  document.getElementById('progress-pct').textContent = pct + '%';
-  document.getElementById('count-label').textContent = done + ' of ' + total + ' done';
-}
-
-// RENDER ROOMS
-function render() {
-  const container = document.getElementById('rooms-container');
-  container.innerHTML = '';
-  ROOMS.forEach(room => {
-    const doneCnt = room.tasks.filter((t,i) => taskState[key(room.id,i)]).length;
-    const div = document.createElement('div');
-    div.className = 'room' + (room.open ? ' open' : '');
-    const hdr = document.createElement('div');
-    hdr.className = 'room-header';
-    hdr.innerHTML = `<span class="room-icon">${room.icon}</span>
-      <span class="room-title">${room.label}</span>
-      <span class="room-badge">${doneCnt}/${room.tasks.length}</span>
-      <span class="room-chevron">▾</span>`;
-    hdr.addEventListener('click', () => { room.open = !room.open; render(); });
-    const list = document.createElement('div');
-    list.className = 'task-list';
-    room.tasks.forEach((task, i) => {
-      const k = key(room.id, i);
-      const isDone = !!taskState[k];
-      const item = document.createElement('div');
-      item.className = 'task' + (isDone ? ' done' : '');
-      const tagHtml = task.tag ? `<div><span class="tag tag-${task.tag}">${task.tag==='week1'?'week 1':task.tag}</span></div>` : '';
-      item.innerHTML = `<div class="check"><span class="check-mark">✓</span></div><div class="task-body"><div class="task-text">${task.text}</div>${tagHtml}</div>`;
-      item.addEventListener('click', () => { taskState[k] = !taskState[k]; save(); render(); updateProgress(); });
+function render(){
+  const container=document.getElementById('rooms-container');
+  container.innerHTML='';
+  ROOMS.forEach(room=>{
+    const doneCnt=room.tasks.filter((_,i)=>taskState[key(room.id,i)]).length;
+    const div=document.createElement('div');
+    div.className='room'+(room.open?' open':'');
+    const hdr=document.createElement('div');
+    hdr.className='room-header';
+    hdr.innerHTML=`<span class="room-icon">${room.icon}</span><span class="room-title">${room.label}</span><span class="room-badge">${doneCnt}/${room.tasks.length}</span><span class="room-chevron">▾</span>`;
+    hdr.addEventListener('click',()=>{room.open=!room.open;render();});
+    const list=document.createElement('div');list.className='task-list';
+    room.tasks.forEach((task,i)=>{
+      const k=key(room.id,i),isDone=!!taskState[k];
+      const item=document.createElement('div');item.className='task'+(isDone?' done':'');
+      const tagHtml=task.tag?`<div><span class="tag tag-${task.tag}">${task.tag==='week1'?'week 1':task.tag}</span></div>`:'';
+      item.innerHTML=`<div class="check"><span class="check-mark">✓</span></div><div class="task-body"><div class="task-text">${task.text}</div>${tagHtml}</div>`;
+      item.addEventListener('click',()=>{taskState[k]=!taskState[k];save();render();updateProgress();});
       list.appendChild(item);
     });
-    const addRow = document.createElement('div');
-    addRow.className = 'add-task';
-    const inp = document.createElement('input');
-    inp.className = 'add-input'; inp.placeholder = 'Add a task…'; inp.type = 'text';
-    const btn = document.createElement('button');
-    btn.className = 'add-btn'; btn.textContent = '+';
-    btn.addEventListener('click', () => {
-      const val = inp.value.trim();
-      if (!val) return;
-      room.tasks.push({ text: val, tag: '' });
-      inp.value = '';
-      render(); updateProgress();
-    });
-    inp.addEventListener('keydown', e => { if (e.key === 'Enter') btn.click(); });
-    addRow.appendChild(inp); addRow.appendChild(btn);
-    list.appendChild(addRow);
-    div.appendChild(hdr); div.appendChild(list);
-    container.appendChild(div);
+    const addRow=document.createElement('div');addRow.className='add-task';
+    const inp=document.createElement('input');inp.className='add-input';inp.placeholder='Add a task…';inp.type='text';
+    const btn=document.createElement('button');btn.className='add-btn';btn.textContent='+';
+    btn.addEventListener('click',()=>{const val=inp.value.trim();if(!val)return;room.tasks.push({text:val,tag:''});inp.value='';render();updateProgress();});
+    inp.addEventListener('keydown',e=>{if(e.key==='Enter')btn.click();});
+    addRow.appendChild(inp);addRow.appendChild(btn);list.appendChild(addRow);
+    div.appendChild(hdr);div.appendChild(list);container.appendChild(div);
   });
   updateProgress();
 }
 
-// TRACKER
-function toggleTracker() {
-  const t = document.getElementById('tracker');
-  t.classList.toggle('open');
+function toggleLog(){
+  logOpen=!logOpen;
+  document.getElementById('day-entries').classList.toggle('open',logOpen);
+  document.getElementById('log-toggle').classList.toggle('open',logOpen);
 }
 
-function populateDaySelect() {
-  const sel = document.getElementById('day-select');
-  sel.innerHTML = '';
-  for (let i = 1; i <= 35; i++) {
-    const opt = document.createElement('option');
-    opt.value = i;
-    opt.textContent = 'Day ' + i;
-    sel.appendChild(opt);
-  }
-  // default to next unrated day
-  const rated = dayRatings.map(d => d.day);
-  for (let i = 1; i <= 35; i++) {
-    if (!rated.includes(i)) { sel.value = i; break; }
-  }
+function populateDaySelect(){
+  const sel=document.getElementById('day-select');sel.innerHTML='';
+  for(let i=1;i<=35;i++){const opt=document.createElement('option');opt.value=i;opt.textContent='Day '+i;sel.appendChild(opt);}
+  const rated=dayRatings.map(d=>d.day);
+  for(let i=1;i<=35;i++){if(!rated.includes(i)){sel.value=i;break;}}
 }
-
-function setStar(n) {
-  selectedStar = n;
-  document.querySelectorAll('.star-btn').forEach((btn, idx) => {
-    btn.classList.toggle('active', idx < n);
-  });
+function setStar(n){selectedStar=n;document.querySelectorAll('.star-btn').forEach((btn,idx)=>btn.classList.toggle('active',idx<n));}
+function logDay(){
+  const day=parseInt(document.getElementById('day-select').value);
+  const note=document.getElementById('note-input').value.trim();
+  if(!selectedStar){alert('Please select a star rating!');return;}
+  const existing=dayRatings.findIndex(d=>d.day===day);
+  if(existing>=0)dayRatings[existing]={day,stars:selectedStar,note};
+  else dayRatings.push({day,stars:selectedStar,note});
+  dayRatings.sort((a,b)=>a.day-b.day);
+  document.getElementById('note-input').value='';
+  selectedStar=0;
+  document.querySelectorAll('.star-btn').forEach(b=>b.classList.remove('active'));
+  save();renderTracker();populateDaySelect();
 }
-
-function logDay() {
-  const day = parseInt(document.getElementById('day-select').value);
-  const note = document.getElementById('note-input').value.trim();
-  if (!selectedStar) { alert('Please select a star rating!'); return; }
-  const existing = dayRatings.findIndex(d => d.day === day);
-  if (existing >= 0) dayRatings[existing] = { day, stars: selectedStar, note };
-  else dayRatings.push({ day, stars: selectedStar, note });
-  dayRatings.sort((a,b) => a.day - b.day);
-  document.getElementById('note-input').value = '';
-  selectedStar = 0;
-  document.querySelectorAll('.star-btn').forEach(b => b.classList.remove('active'));
-  save();
-  renderTracker();
-  populateDaySelect();
-}
-
-function deleteDay(day) {
-  dayRatings = dayRatings.filter(d => d.day !== day);
-  save();
-  renderTracker();
-  populateDaySelect();
-}
-
-function renderTracker() {
-  const container = document.getElementById('day-entries');
-  container.innerHTML = '';
-  if (dayRatings.length === 0) {
-    container.innerHTML = '<div style="padding:1rem;text-align:center;color:var(--muted);font-size:13px;">No days logged yet</div>';
+function deleteDay(day){dayRatings=dayRatings.filter(d=>d.day!==day);save();renderTracker();populateDaySelect();}
+function renderTracker(){
+  const container=document.getElementById('day-entries');container.innerHTML='';
+  if(!dayRatings.length){
+    container.innerHTML='<div style="padding:1rem;text-align:center;color:var(--muted);font-size:13px;">No days logged yet</div>';
   } else {
-    dayRatings.forEach(d => {
-      const el = document.createElement('div');
-      el.className = 'day-entry';
-      el.innerHTML = `<span class="day-num">Day ${d.day}</span>
-        <span class="day-stars">${'⭐'.repeat(d.stars)}${'☆'.repeat(4-d.stars)}</span>
-        <span class="day-note">${d.note || ''}</span>
-        <button class="day-delete" onclick="deleteDay(${d.day})">✕</button>`;
+    dayRatings.forEach(d=>{
+      const el=document.createElement('div');el.className='day-entry';
+      el.innerHTML=`<span class="day-num">Day ${d.day}</span><span class="day-stars">${'⭐'.repeat(d.stars)}${'☆'.repeat(4-d.stars)}</span><span class="day-note">${d.note||''}</span><button class="day-delete" onclick="deleteDay(${d.day})">✕</button>`;
       container.appendChild(el);
     });
   }
-  // avg
-  const avg = dayRatings.length ? (dayRatings.reduce((s,d) => s+d.stars, 0) / dayRatings.length).toFixed(2) : '—';
-  document.getElementById('avg-val').textContent = avg !== '—' ? avg + ' / 4' : '—';
-  document.getElementById('tracker-avg-badge').textContent = avg !== '—' ? avg + ' avg' : '';
+  const avg=dayRatings.length?(dayRatings.reduce((s,d)=>s+d.stars,0)/dayRatings.length).toFixed(2):'—';
+  document.getElementById('avg-val').textContent=avg!=='—'?avg+' / 4':'—';
+  document.getElementById('tracker-avg-badge').textContent=avg!=='—'?avg+' avg':'';
+  document.getElementById('log-toggle-label').textContent=`Daily log (${dayRatings.length} day${dayRatings.length!==1?'s':''})`;
+}
+function resetAll(){
+  if(confirm('Reset ALL data including tasks and ratings? This cannot be undone.')){taskState={};dayRatings=[];save();render();renderTracker();}
 }
 
-function resetAll() {
-  if (confirm('Reset ALL data including tasks and ratings? This cannot be undone.')) {
-    taskState = {};
-    dayRatings = [];
-    save();
-    render();
-    renderTracker();
-  }
-}
-
-load();
-render();
-populateDaySelect();
-renderTracker();
+load();render();populateDaySelect();renderTracker();
 </script>
 </body>
 </html>
